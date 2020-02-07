@@ -2,6 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
+from fugle_realtime import intraday
 
 ########### Define your variables
 beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
@@ -16,6 +17,20 @@ label1='IBU'
 label2='ABV'
 githublink='https://github.com/austinlasseter/flying-dog-beers'
 sourceurl='https://www.flyingdog.com/beers/'
+
+df=intraday.chart(apiToken="f2db1f5dde4b0efb6e30d76cc9de4688", output="dataframe", symbolId=stock_id)
+
+
+def generate_table(dataframe, max_rows=10):
+    return html.Table(
+        # Header
+        [html.Tr([html.Th(col) for col in dataframe.columns])] +
+
+        # Body
+        [html.Tr([
+            html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+        ]) for i in range(min(len(dataframe), max_rows))]
+    )
 
 ########### Set up the chart
 bitterness = go.Bar(
@@ -56,6 +71,7 @@ app.layout = html.Div(children=[
     html.A('Code on Github (mac332)', href=githublink),
     html.Br(),
     html.A('Data Source', href=sourceurl),
+    generate_table(df)
     ]
 )
 
