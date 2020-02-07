@@ -24,3 +24,4 @@ def table(interval_component):
     ])
 if __name__ == '__main__':
     app.run_server()
+    print('hello333')
